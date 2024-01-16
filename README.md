@@ -46,3 +46,34 @@ To install: `npx shadcn-ui@latest init`
 
 For more info, check [documentation](https://lucide.dev/guide/packages/lucide-react) \
 To install: `npm install lucide-react`
+
+## Express
+
+Used for server side rendering. For more info, check [documentation](https://www.npmjs.com/package/express) \
+To install: `npm install express` \
+To add types: `npm install -D --save @types/express`
+
+## Headless CMS: Payload
+
+For more info, check [documentation](https://www.npmjs.com/package/payload) \
+To install: `npm i payload`
+
+## cross-env
+
+For more info, check [documentation](https://www.npmjs.com/package/cross-env) \
+To install: `npm install --save-dev cross-env`
+
+## Editor: slate.js with Payload
+
+For more info, check [documentation](https://payloadcms.com/docs/rich-text/slate) \
+To install: `npm install --save @payloadcms/richtext-slate`
+
+## Backend: bundle-webpack with Payload
+
+For more info, check [documentation](https://payloadcms.com/docs/admin/webpack) \
+To install: `npm install @payloadcms/bundler-webpack`
+
+## Database: MongoDB with Payload
+
+For more info, check [documentation](https://www.npmjs.com/package/@payloadcms/db-mongodb) \
+To install: `npm install @payloadcms/db-mongodb`
