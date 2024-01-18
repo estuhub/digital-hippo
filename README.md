@@ -99,3 +99,8 @@ To install: `npm i zod`
 
 For toast notification library. For more info, check [documentation](https://www.npmjs.com/package/sonner) \
 To install: `npm i sonner`
+
+## tRPR & [Tanstack](https://tanstack.com/query/v4/docs/react/installation)
+
+A tool for building and consuming TypeScript RPC services. Type safety to back end and front end. For more info, check [documentation](https://trpc.io/docs/quickstart) \
+To install: `npm i @trpc/client @trpc/server @trpc/next @trpc/react-query @tanstack/react-query`
