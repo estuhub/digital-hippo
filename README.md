@@ -77,3 +77,25 @@ To install: `npm install @payloadcms/bundler-webpack`
 
 For more info, check [documentation](https://www.npmjs.com/package/@payloadcms/db-mongodb) \
 To install: `npm install @payloadcms/db-mongodb`
+
+## Form: react-hook-form, @hookform/resolver, zod & sooner
+
+### react-hook-form
+
+For form handling. For more info, check [documentation](https://www.npmjs.com/package/react-hook-form) \
+To install: `npm i react-hook-form`
+
+### @hookform/resolvers
+
+For form validation. For more info, check [documentation](https://www.npmjs.com/package/@hookform/resolvers/v/1.3.7) \
+To install: `npm i @hookform/resolvers`
+
+### zod
+
+For schema validation library. For more info, check [documentation](https://www.npmjs.com/package/zod) \
+To install: `npm i zod`
+
+### sonner
+
+For toast notification library. For more info, check [documentation](https://www.npmjs.com/package/sonner) \
+To install: `npm i sonner`
