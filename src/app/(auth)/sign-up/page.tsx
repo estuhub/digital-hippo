@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 // Form handling with react-hook-form
 import { useForm } from "react-hook-form";
@@ -33,7 +34,13 @@ const Signup = () => {
   });
 
   // TRPC mutation hook for creating a new user
-  const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation({});
+  const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation({
+    onError: (err) => {
+      if (err.data?.code === "CONFLICT") {
+        toast.error("This email is already in use. Sign in instead?");
+      }
+    },
+  });
 
   // Form submission callback
   const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
