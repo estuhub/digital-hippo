@@ -105,6 +105,22 @@ To install: `npm i sonner`
 A tool for building and consuming TypeScript RPC services. Type safety to back end and front end. For more info, check [documentation](https://trpc.io/docs/quickstart) \
 To install: `npm i @trpc/client @trpc/server @trpc/next @trpc/react-query @tanstack/react-query`
 
+## Emails: resend, nodemailer & @types/nodemailer
+
+### resend
+
+To send emails that land in the inbox and not in the spam folder. Create an account in their website and use the API key in your code. For more info, check [documentation](https://resend.com/docs/send-with-nextjs)
+
+### nodemailer
+
+For sending emails. For more info, check [documentation](https://www.npmjs.com/package/nodemailer). \
+To install: `npm i nodemailer`
+
+### @types/nodemailer
+
+To add types to nodemailer package. For more info, check [documentation](https://www.npmjs.com/package/@types/nodemailer). \
+To install: `npm i @types/nodemailer`
+
 ## package.json
 
 ### scripts: dev
