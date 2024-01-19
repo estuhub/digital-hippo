@@ -4,7 +4,13 @@ export const Users: CollectionConfig = {
   slug: "users",
   // Indicates that authentication is enabled for this collection.
   // This suggests that user data may be sensitive and requires authentication.
-  auth: true,
+  auth: {
+    verify: {
+      generateEmailHTML: ({ token }) => {
+        return `<p>hello pls verify your email</p>`;
+      },
+    },
+  },
   // Defines access control rules for the collection to different types of users.
   access: {
     read: () => true,

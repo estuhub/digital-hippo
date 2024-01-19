@@ -2,9 +2,23 @@ import dotenv from "dotenv";
 import path from "path";
 import payload, { Payload } from "payload";
 import type { InitOptions } from "payload/config";
+import nodemailer from "nodemailer";
 
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
+});
+
+// Nodemailer Setup
+// A Nodemailer transporter configured to send emails.
+// This is used in the Payload CMS initialization options for handling email-related functionality.
+const transporter = nodemailer.createTransport({
+  host: "smtp.resend.com",
+  secure: true,
+  port: 465,
+  auth: {
+    user: "resend",
+    pass: process.env.RESEND_API_KEY,
+  },
 });
 
 // Global Cache Initialization
@@ -49,6 +63,11 @@ export const getPayloadClient = async ({
   // Configures the initialization with the secret from the environment variable and additional options such as whether it is running locally (local).
   if (!cached.promise) {
     cached.promise = payload.init({
+      email: {
+        transport: transporter,
+        fromAddress: "onboarding@resend.dev", // TODO: change to a custom domain
+        fromName: "DigitalHippo",
+      },
       secret: process.env.PAYLOAD_SECRET!,
       local: initOptions?.express ? false : true,
       ...(initOptions || {}),
