@@ -1,5 +1,10 @@
 {
-  "watch": ["server.ts", "src/collections/**/*.ts", "src/trpc/index.ts"],
+  "watch": [
+    "server.ts",
+    "src/collections/**/*.ts",
+    "src/trpc/index.ts",
+    "src/trpc/auth-router.ts"
+  ],
   "exec": "npx ts-node --project tsconfig.server.json src/server.ts -- -I",
   "ext": "js ts",
   "stdin": false
