@@ -3,15 +3,21 @@ import { publicProcedure, router } from "./trpc";
 import { getPayloadClient } from "../get-payload";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import payload from "payload";
 
+// Define the authentication router using TRPC's router function
 export const authRouter = router({
+  // Procedure for creating a new user
   createPayloadUser: publicProcedure
-    .input(AuthCredentialsValidator)
+    .input(AuthCredentialsValidator) // Input validation using Zod schema
     .mutation(async ({ input }) => {
+      // Extract email and password from the input object
       const { email, password } = input;
+
+      // Obtain a Payload CMS client
       const payload = await getPayloadClient();
 
-      // Check if user already exists
+      // Check if the user already exists in the "users" collection
       const { docs: users } = await payload.find({
         collection: "users",
         where: {
@@ -61,6 +67,33 @@ export const authRouter = router({
 
       // If email verification is successful, return a success response
       return { success: true };
+    }),
+
+  // Procedure for user sign-in
+  signIn: publicProcedure
+    .input(AuthCredentialsValidator) // Input validation using Zod schema
+    .mutation(async ({ input, ctx }) => {
+      // Extract email and password from the input object and response object from context
+      const { email, password } = input;
+      const { res } = ctx;
+
+      try {
+        // Attempt to login the user using Payload's login method
+        await payload.login({
+          collection: "users",
+          data: {
+            email,
+            password,
+          },
+          res,
+        });
+
+        // If login is successful, return a success response
+        return { success: true };
+      } catch (error) {
+        // If login fails, throw an unauthorized error
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
     }),
 });
 
