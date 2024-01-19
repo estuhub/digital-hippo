@@ -104,3 +104,15 @@ To install: `npm i sonner`
 
 A tool for building and consuming TypeScript RPC services. Type safety to back end and front end. For more info, check [documentation](https://trpc.io/docs/quickstart) \
 To install: `npm i @trpc/client @trpc/server @trpc/next @trpc/react-query @tanstack/react-query`
+
+## package.json
+
+### scripts: dev
+
+Uses nodemon to run the development server, with the PAYLOAD_CONFIG_PATH environment variable set to the path of the Payload CMS configuration file (src/payload.config.ts). \
+To run: `npm run dev`
+
+### scripts: generate:types
+
+Generates TypeScript types using the Payload CLI, with the PAYLOAD_CONFIG_PATH environment variable set to the path of the Payload CMS configuration file. \
+To run: `npm run generate:types`
