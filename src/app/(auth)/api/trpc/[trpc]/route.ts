@@ -15,6 +15,7 @@ const handler = (req: Request) => {
     router: appRouter,
     // A function that creates the context for handling the request.
     // In this case, it's a simple function that returns an empty object (() => ({})), but you may customize it to provide additional context for your TRPC procedures.
+    // @ts-expect-error context already passed from express middleware
     createContext: () => ({}),
   });
 };

@@ -3,6 +3,7 @@ import { getPayloadClient } from "./get-payload";
 import { nextApp, nextHandler } from "./next-utils";
 import * as trpcExpress from "@trpc/server/adapters/express"; // TRPC Express adapter for integrating TRPC with Express.
 import { appRouter } from "./trpc"; // The TRPC router instance defined in the trpc.ts file.
+import { inferAsyncReturnType } from "@trpc/server";
 
 // Express App Initialization
 // Initializes an Express app and sets the port for the server to either the value specified in the environment variable PORT or the default value 3000.
@@ -18,6 +19,8 @@ const createContext = ({
   req,
   res,
 });
+
+export type ExpressContext = inferAsyncReturnType<typeof createContext>;
 
 // Defines an asynchronous function named start that contains the main logic for starting the server.
 const start = async () => {
