@@ -1,5 +1,9 @@
 "use client";
 
+// Using the TRPC client for making authenticated API requests
+import { trpc } from "@/trpc/client";
+
+// Components and utilities
 import { Icons } from "@/components/Icons";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,14 +11,19 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+
+// Form handling with react-hook-form
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+// // Validation schema and type for authentication credentials
 import {
   AuthCredentialsValidator,
   TAuthCredentialsValidator,
 } from "@/lib/validators/account-credentials-validators";
 
 const Signup = () => {
+  // Form handling with react-hook-form
   const {
     register,
     handleSubmit,
@@ -23,8 +32,13 @@ const Signup = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   });
 
+  // TRPC mutation hook for creating a new user
+  const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation({});
+
+  // Form submission callback
   const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
     // TODO: send data to server
+    mutate({ email, password });
   };
 
   return (
@@ -62,6 +76,7 @@ const Signup = () => {
                   <Label htmlFor="password">Password</Label>
                   <Input
                     {...register("password")}
+                    type="password"
                     className={cn({
                       "focus-visible:ring-red-500": errors.password,
                     })}
@@ -79,3 +94,8 @@ const Signup = () => {
 };
 
 export default Signup;
+
+// The component uses react-hook-form for form handling and validation.
+// It uses the trpc hook from the TRPC client to make an authenticated API request for user creation.
+// The UI includes a form with email and password inputs, a "Sign Up" button, and a link to the sign-in page.
+// The Icons.logo component is a custom component for rendering a logo.
