@@ -51,13 +51,13 @@ const start = async () => {
   // Next.js Initialization and Server Start
   // Calls nextApp.prepare() to initialize Next.js.
   nextApp.prepare().then(() => {
-    // payload.logger.info("Next.js started");
+    payload.logger.info("Next.js started");
 
     // After initialization, starts the Express server to listen on the specified port.
     app.listen(PORT, async () => {
-      // payload.logger.info(
-      //   `Next.js App URL: ${process.env.NEXT_PUBLIC_SERVER_URL}`
-      // );
+      payload.logger.info(
+        `Next.js App URL: ${process.env.NEXT_PUBLIC_SERVER_URL}`
+      );
     });
   });
 };
