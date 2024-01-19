@@ -11,17 +11,21 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // Form handling with react-hook-form
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// // Validation schema and type for authentication credentials
+// Validation schema and type for authentication credentials
 import {
   AuthCredentialsValidator,
   TAuthCredentialsValidator,
 } from "@/lib/validators/account-credentials-validators";
+
+// Errors and messages handling
+import { toast } from "sonner";
+import { ZodError } from "zod";
 
 const Signup = () => {
   // Form handling with react-hook-form
@@ -33,18 +37,34 @@ const Signup = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   });
 
+  const router = useRouter();
+
   // TRPC mutation hook for creating a new user
   const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation({
+    // Error handling based on the type of error
     onError: (err) => {
       if (err.data?.code === "CONFLICT") {
         toast.error("This email is already in use. Sign in instead?");
+        return;
       }
+
+      if (err instanceof ZodError) {
+        toast.error(err.issues[0].message);
+        return;
+      }
+
+      toast.error("Something went wrong. Please, try again.");
+    },
+
+    // Success callback when user creation is successful
+    onSuccess: ({ sentToEmail }) => {
+      toast.success(`Verification email sent to ${sentToEmail}`);
+      router.push("/verify-email?to=" + sentToEmail);
     },
   });
 
   // Form submission callback
   const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
-    // TODO: send data to server
     mutate({ email, password });
   };
 
