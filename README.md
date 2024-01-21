@@ -132,3 +132,8 @@ To run: `npm run dev`
 
 Generates TypeScript types using the Payload CLI, with the PAYLOAD_CONFIG_PATH environment variable set to the path of the Payload CMS configuration file. \
 To run: `npm run generate:types`
+
+## Image Slider: swiper
+
+For more info, check [documentation](https://www.npmjs.com/package/swiper). \
+To install: `npm i swiper`
