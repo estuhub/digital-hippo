@@ -5,6 +5,10 @@ import { slateEditor } from "@payloadcms/richtext-slate";
 import path from "path";
 import dotenv from "dotenv";
 import { Users } from "./collections/Users";
+import { Products } from "./collections/Products/Products";
+import { Media } from "./collections/Media";
+import { ProductFiles } from "./collections/ProductFile";
+import { Orders } from "./collections/Orders";
 
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
@@ -15,8 +19,8 @@ export default buildConfig({
   // Payload CMS Configuration Options:
   // Sets the server URL for the Payload CMS, using the value from the NEXT_PUBLIC_SERVER_URL environment variable or an empty string if not defined.
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "",
-  // Specifies the collections (content types) used in the CMS, including the Users collection.
-  collections: [Users],
+  // Specifies the collections (content types) used in the CMS.
+  collections: [Users, Products, Media, ProductFiles, Orders],
   // Defines custom routes, such as the admin route being set to "/sell".
   routes: {
     admin: "/sell",
