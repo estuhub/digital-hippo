@@ -15,16 +15,19 @@ interface ProductProps {
   };
 }
 
+// Definition of breadcrumbs for navigation
 const BREADCRUMBS = [
   { id: 1, name: "Home", href: "/" },
   { id: 2, name: "Products", href: "/products" },
 ];
 
+// Page component for displaying details of a specific product
 const Product = async ({ params }: ProductProps) => {
+  // Extracting productId from params
   const { productId } = params;
 
+  // Fetching product details using getPayloadClient
   const payload = await getPayloadClient();
-
   const { docs: products } = await payload.find({
     collection: "products",
     limit: 1,
@@ -38,24 +41,28 @@ const Product = async ({ params }: ProductProps) => {
     },
   });
 
+  // Checking if the product exists, otherwise return a 404 page
   const [product] = products;
   if (!product) return notFound();
 
+  // Finding the label for the product category
   const label = PRODUCT_CATEGORIES.find(
     ({ value }) => value === product.category
   )?.label;
 
+  // Extracting valid image URLs from product images
   const validUrls = product.images
     .map(({ image }) => (typeof image === "string" ? image : image.url))
     .filter(Boolean) as string[];
 
+  // Rendering the product details page
   return (
     <MaxWidthWrapper className="bg-white">
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
           {/* Product Details */}
           <div className="lg:max-w-lg lg:self-end">
-            {/* Breadcrumb */}
+            {/* Breadcrumbs for navigation */}
             <ol className="flex items-center space-x-2">
               {BREADCRUMBS.map((breadcrumb, i) => (
                 <li key={breadcrumb.href}>
@@ -80,29 +87,36 @@ const Product = async ({ params }: ProductProps) => {
                 </li>
               ))}
             </ol>
-            {/* Product Title */}
+
+            {/* Product title */}
             <div className="mt-4">
-              <h1 className="text-3xl font-bold tracking-tigh text-gray-900 sm:text-4xl">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                 {product.name}
               </h1>
             </div>
+
+            {/* Product information */}
             <section className="mt-4">
-              {/* Product price and category */}
               <div className="flex items-center">
+                {/* Product price */}
                 <p className="font-medium text-gray-900">
                   {formatPrice(product.price)}
                 </p>
+
+                {/* Product category */}
                 <div className="ml-4 border-l text-muted-foreground border-gray-300 pl-4">
                   {label}
                 </div>
               </div>
+
               {/* Product description */}
               <div className="mt-4 space-y-6">
                 <p className="text-base text-muted-foreground">
                   {product.description}
                 </p>
               </div>
-              {/* Product benefits */}
+
+              {/* Additional product details */}
               <div className="mt-6 flex items-center">
                 <Check
                   aria-hidden="true"
@@ -114,20 +128,22 @@ const Product = async ({ params }: ProductProps) => {
               </div>
             </section>
           </div>
-          {/* Product Images */}
-          <div className="mt-10 lg:col-start-2 lg:row-start-2 lg:mt-0 lg:self-center">
+
+          {/* Product images */}
+          <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
             <div className="aspect-square rounded-lg">
               <ImageSlider urls={validUrls} />
             </div>
           </div>
+
           {/* Add to cart section */}
           <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
             <div>
               <div className="mt-10">
-                <AddToCartButton />
+                <AddToCartButton product={product} />
               </div>
               <div className="mt-6 text-center">
-                <div className="group inline-flex text-sm font-medium">
+                <div className="group inline-flex text-sm text-medium">
                   <Shield
                     aria-hidden="true"
                     className="mr-2 h-5 w-5 flex-shrink-0 text-gray-400"
@@ -141,12 +157,13 @@ const Product = async ({ params }: ProductProps) => {
           </div>
         </div>
       </div>
-      {/* Similar products from the same category */}
+
+      {/* Displaying a reel of similar products */}
       <ProductReel
         href="/products"
         query={{ category: product.category, limit: 4 }}
         title={`Similar ${label}`}
-        subtitle={`Browse similar high-quality ${label} just like ${product.name}`}
+        subtitle={`Browse similar high-quality ${label} just like '${product.name}'`}
       />
     </MaxWidthWrapper>
   );
