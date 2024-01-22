@@ -87,4 +87,32 @@ export const paymentRouter = router({
         return { url: null };
       }
     }),
+  // Procedure for polling the status of a payment order
+  pollOrderStatus: privateProcedure
+    .input(z.object({ orderId: z.string() })) // Input validation using Zod
+    .query(async ({ input }) => {
+      const { orderId } = input;
+
+      // Fetching the order status from the payload collection
+      const payload = await getPayloadClient();
+      const { docs: orders } = await payload.find({
+        collection: "orders",
+        where: {
+          id: {
+            equals: orderId,
+          },
+        },
+      });
+
+      // If no orders are found, throw a not found error
+      if (!orders.length) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      // Extracting the first order
+      const [order] = orders;
+
+      // Returning the payment status of the order
+      return { isPaid: order._isPaid };
+    }),
 });
