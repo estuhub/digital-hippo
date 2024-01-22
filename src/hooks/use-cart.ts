@@ -25,21 +25,16 @@ export const useCart = create<CartState>()(
   persist(
     (set) => ({
       items: [],
-
       // Function to add a product to the cart
       addItem: (product) =>
         set((state) => {
           return { items: [...state.items, { product }] };
         }),
-
       // Function to remove a product from the cart by productId
-      removeItem: (productId) =>
-        set((state) => {
-          return {
-            items: state.items.filter((item) => item.product.id !== productId),
-          };
-        }),
-
+      removeItem: (id) =>
+        set((state) => ({
+          items: state.items.filter((item) => item.product.id !== id),
+        })),
       // Function to clear all items from the cart
       clearCart: () => set({ items: [] }),
     }),
