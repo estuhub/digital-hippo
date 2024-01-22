@@ -137,3 +137,8 @@ To run: `npm run generate:types`
 
 For more info, check [documentation](https://www.npmjs.com/package/swiper). \
 To install: `npm i swiper`
+
+## State Management: Zustand
+
+Library for React applications that provides a simple and flexible way to manage global state. For more info, check [documentation](https://docs.pmnd.rs/zustand/getting-started/introduction) \
+To install: `npm i zustand`
