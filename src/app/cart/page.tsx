@@ -13,20 +13,34 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const CartPage = () => {
+  // Retrieve cart items and removeItem function from the useCart hook
   const { items, removeItem } = useCart();
 
+  // Initialize the Next.js router
   const router = useRouter();
 
+  // UseMutation hook for creating a checkout session
+  const { mutate: createCheckoutSession, isLoading } =
+    trpc.payment.createSession.useMutation({
+      onSuccess: ({ url }) => {
+        if (url) router.push(url);
+      },
+    });
+
+  // Extract product IDs from cart items
   const productIds = items.map(({ product }) => product.id);
 
+  // Avoid hydration errors by setting isMounted state
   const [isMounted, setIsMounted] = useState<boolean>(false);
   useEffect(() => setIsMounted(true), []);
 
+  // Calculate the total price of items in the cart
   const cartTotal = items.reduce(
     (total, { product }) => total + product.price,
     0
   );
 
+  // Flat transaction fee for the order
   const fee = 1;
 
   return (
@@ -193,9 +207,14 @@ const CartPage = () => {
               {/* Checkout button */}
               <div className="mt-6">
                 <Button
+                  disabled={items.length === 0 || isLoading}
+                  onClick={() => createCheckoutSession({ productIds })}
                   className="w-full"
                   size="lg"
                 >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                  ) : null}
                   Checkout
                 </Button>
               </div>

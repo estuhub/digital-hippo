@@ -1,16 +1,17 @@
 // :::: Defining an API Route ::::
 
 import { z } from "zod";
-import { authRouter } from "./auth-router";
-import { publicProcedure, router } from "./trpc";
-import { query } from "express";
-import { QueryValidator } from "../lib/validators/query-validator";
 import { getPayloadClient } from "../get-payload";
+import { QueryValidator } from "../lib/validators/query-validator";
+import { authRouter } from "./auth-router";
+import { paymentRouter } from "./payment-router";
+import { publicProcedure, router } from "./trpc";
 
 // This code defines a new router called appRouter using the router instance obtained from the TRPC context.
 export const appRouter = router({
   // Includes the authentication router (authRouter) as a sub-router named auth.
   auth: authRouter,
+  payment: paymentRouter,
   // Defining a public procedure named getInfiniteProducts for fetching products in an infinite scroll manner
   getInfiniteProducts: publicProcedure
     .input(
