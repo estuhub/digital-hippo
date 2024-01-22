@@ -122,6 +122,11 @@ To install: `npm i nodemailer`
 To add types to nodemailer package. For more info, check [documentation](https://www.npmjs.com/package/@types/nodemailer). \
 To install: `npm i @types/nodemailer`
 
+### @react-email/components
+
+A collection of reusable React components for building email templates. For more info, check [documentation](https://react.email/docs/getting-started/automatic-setup). \
+To install: `npm i @react-email/components`
+
 ## package.json
 
 ### scripts: dev
