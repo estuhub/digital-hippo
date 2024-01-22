@@ -109,7 +109,8 @@ To install: `npm i @trpc/client @trpc/server @trpc/next @trpc/react-query @tanst
 
 ### resend
 
-To send emails that land in the inbox and not in the spam folder. Create an account in their website and use the API key in your code. For more info, check [documentation](https://resend.com/docs/send-with-nextjs)
+To send emails that land in the inbox and not in the spam folder. Create an account in their website and use the API key in your code. For more info, check [documentation](https://resend.com/docs/send-with-nextjs) \
+To install: `npm install resend`
 
 ### nodemailer
 
