@@ -1,13 +1,95 @@
-import { BeforeChangeHook } from "payload/dist/collections/config/types";
-import { Product } from "../../payload-types";
+import {
+  AfterChangeHook,
+  BeforeChangeHook,
+} from "payload/dist/collections/config/types";
 import { PRODUCT_CATEGORIES } from "../../config";
-import { CollectionConfig } from "payload/types";
+import { Access, CollectionConfig } from "payload/types";
+import { Product, User } from "../../payload-types";
 import { stripe } from "../../lib/stripe";
 
+// BeforeChange hook to add the user ID to the product data before creation
 const addUser: BeforeChangeHook<Product> = async ({ req, data }) => {
   const user = req.user;
   return { ...data, user: user.id };
 };
+
+// AfterChange hook to sync the product ID with the user's products array after creation
+const syncUser: AfterChangeHook<Product> = async ({ req, doc }) => {
+  // Find the full user information based on the current user ID
+  const fullUser = await req.payload.findByID({
+    collection: "users",
+    id: req.user.id,
+  });
+
+  // Check if the user information is found and is an object
+  if (fullUser && typeof fullUser === "object") {
+    // Extract the products array from the full user information
+    const { products } = fullUser;
+
+    // Create an array of all product IDs associated with the user
+    const allIDs = [
+      ...(products?.map((product) =>
+        typeof product === "object" ? product.id : product
+      ) || []),
+    ];
+
+    // Remove duplicate product IDs, keeping only the unique ones
+    const createdProductIDs = allIDs.filter(
+      (id, index) => allIDs.indexOf(id) === index
+    );
+
+    // Create an array of product IDs to update, including the new product
+    const dataToUpdate = [...createdProductIDs, doc.id];
+
+    // Update the user's products array with the new data
+    await req.payload.update({
+      collection: "users",
+      id: fullUser.id,
+      data: {
+        products: dataToUpdate,
+      },
+    });
+  }
+};
+
+// Access control function to determine if the user has permission to access the collection
+const isAdminOrHasAccess =
+  (): Access =>
+  ({ req: { user: _user } }) => {
+    // Extract the user information from the request
+    const user = _user as User | undefined;
+
+    // If no user is present, deny access
+    if (!user) return false;
+
+    // Grant access to admin users
+    if (user.role === "admin") return true;
+
+    // Extract product IDs associated with the user, handling different formats
+    const userProductIDs = (user.products || []).reduce<Array<string>>(
+      (acc, product) => {
+        // Skip null or undefined products
+        if (!product) return acc;
+
+        // Add product ID to the array, handling different formats
+        if (typeof product === "string") {
+          acc.push(product);
+        } else {
+          acc.push(product.id);
+        }
+
+        return acc;
+      },
+      []
+    );
+
+    // Grant access to products that are associated with the user
+    return {
+      id: {
+        in: userProductIDs,
+      },
+    };
+  };
 
 // Collection configuration for the "Products" collection
 export const Products: CollectionConfig = {
@@ -16,10 +98,15 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: "name", // Use the "name" field as the title in the admin interface
   },
+  access: {
+    read: isAdminOrHasAccess(),
+    update: isAdminOrHasAccess(),
+    delete: isAdminOrHasAccess(),
+  },
   // Access control settings for various operations (read, update, delete, create)
-  access: {},
   // Hooks configuration to execute functions before changes
   hooks: {
+    afterChange: [syncUser],
     beforeChange: [
       addUser, // Execute addUser hook
       async (args) => {
@@ -177,7 +264,7 @@ export const Products: CollectionConfig = {
       label: "Product Images",
       labels: {
         singular: "Image",
-        plural: "Image",
+        plural: "Images",
       },
       type: "array",
       required: true,
