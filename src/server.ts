@@ -4,6 +4,13 @@ import { nextApp, nextHandler } from "./next-utils";
 import * as trpcExpress from "@trpc/server/adapters/express"; // TRPC Express adapter for integrating TRPC with Express.
 import { appRouter } from "./trpc"; // The TRPC router instance defined in the trpc.ts file.
 import { inferAsyncReturnType } from "@trpc/server";
+import bodyParser from "body-parser";
+import { IncomingMessage } from "http";
+import { stripeWebhookHandler } from "./webhooks";
+import nextBuild from "next/dist/build";
+import path from "path";
+import { PayloadRequest } from "payload/types";
+import { parse } from "url";
 
 // Express App Initialization
 // Initializes an Express app and sets the port for the server to either the value specified in the environment variable PORT or the default value 3000.
@@ -23,9 +30,21 @@ const createContext = ({
 export type ExpressContext = inferAsyncReturnType<typeof createContext>;
 
 // Defines an asynchronous function named start that contains the main logic for starting the server.
+export type WebhookRequest = IncomingMessage & {
+  rawBody: Buffer;
+};
+
 const start = async () => {
   // Initialize Payload Client
   // Calls the getPayloadClient function to initialize a client (CMS) with specific options.
+  const webhookMiddleware = bodyParser.json({
+    verify: (req: WebhookRequest, _, buffer) => {
+      req.rawBody = buffer;
+    },
+  });
+
+  app.post("/api/webhooks/stripe", webhookMiddleware, stripeWebhookHandler);
+
   const payload = await getPayloadClient({
     initOptions: {
       // Configures the client to use Express (express: app) and logs information on initialization.
@@ -39,6 +58,35 @@ const start = async () => {
   // TRPC Middleware
   // Uses the TRPC Express middleware to handle requests to the "/api/trpc" endpoint.
   // Configures the middleware with the TRPC router (appRouter) and the custom context creation function (createContext).
+  if (process.env.NEXT_BUILD) {
+    app.listen(PORT, async () => {
+      payload.logger.info("Next.js is building for production");
+
+      // @ts-expect-error
+      await nextBuild(path.join(__dirname, "../"));
+
+      process.exit();
+    });
+
+    return;
+  }
+
+  const cartRouter = express.Router();
+
+  cartRouter.use(payload.authenticate);
+
+  cartRouter.get("/", (req, res) => {
+    const request = req as PayloadRequest;
+
+    if (!request.user) return res.redirect("/sign-in?origin=cart");
+
+    const parsedUrl = parse(req.url, true);
+    const { query } = parsedUrl;
+
+    return nextApp.render(req, res, "/cart", query);
+  });
+
+  app.use("/cart", cartRouter);
   app.use(
     "/api/trpc",
     trpcExpress.createExpressMiddleware({
