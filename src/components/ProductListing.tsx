@@ -40,7 +40,7 @@ const ProductListing = ({ product, index }: ProductListingProps) => {
   const validUrls = product.images
     .map(({ image }) => (typeof image === "string" ? image : image.url))
     .filter(Boolean) as string[];
-
+  console.log(validUrls);
   // Rendering the product if it is visible and defined
   if (isVisible && product) {
     return (
