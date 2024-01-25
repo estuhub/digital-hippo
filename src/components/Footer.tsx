@@ -47,8 +47,8 @@ const Footer = () => {
                     Become a seller
                   </h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    If you'd like to sell high-quality digital products, you can
-                    do so in minutes.{" "}
+                    If you&apos;d like to sell high-quality digital products,
+                    you can do so in minutes.{" "}
                     {/* Link to the sign-in page with the role set to seller */}
                     <Link
                       href="/sign-in?as=seller"
