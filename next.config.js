@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "digital-hippo-ecommerce.up.railway.app",
+        hostname: "digital-hippo-seven.vercel.app/",
       },
     ],
   },
